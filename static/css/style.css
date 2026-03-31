@@ -1,0 +1,139 @@
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --bg-light: #f8f9fa;
+    --sidebar-bg: #ffffff;
+    --sidebar-hover: #f1f3f9;
+    --text-main: #2b2d42;
+    --text-muted: #8d99ae;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    min-width: 260px;
+    max-width: 260px;
+    background: var(--sidebar-bg);
+    color: var(--text-main);
+    transition: var(--transition);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    border-right: 1px solid #e2e8f0;
+    z-index: 1000;
+}
+
+#sidebar .sidebar-header {
+    padding: 2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+}
+
+#sidebar ul li a {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    display: block;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+#sidebar ul li a:hover, #sidebar ul li.active a {
+    background: var(--sidebar-hover);
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+}
+
+#sidebar ul li a i {
+    margin-right: 10px;
+}
+
+/* Main Content Area */
+#content {
+    width: calc(100% - 260px);
+    padding: 2rem;
+    min-height: 100vh;
+    transition: var(--transition);
+    margin-left: 260px;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid #f1f3f9;
+    padding: 1.25rem;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.stats-card {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stats-card .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stats-card .label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Table styling override */
+.table {
+    font-size: 0.9rem;
+}
+
+.table thead th {
+    background-color: #f8fafc;
+    border-top: none;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 1rem;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}

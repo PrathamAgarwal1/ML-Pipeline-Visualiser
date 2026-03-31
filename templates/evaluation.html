@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="fas fa-poll me-2 text-primary"></i> Model Evaluation</h3>
+    <a href="{{ url_for('prediction') }}" class="btn btn-primary btn-sm">Go to Prediction <i class="fas fa-magic ms-2"></i></a>
+</div>
+
+<div class="row">
+    <!-- Main Metrics -->
+    <div class="col-md-4">
+        <div class="card p-4">
+            <h5 class="mb-4">Performance Metrics</h5>
+            <div class="mb-4">
+                <span class="text-muted small d-block">Model Algorithm</span>
+                <span class="h5 text-primary text-capitalize fw-bold">{{ model_name }}</span>
+            </div>
+
+            {% if problem_type == 'classification' %}
+                {% if results.accuracy is defined %}
+                <div class="stats-card border rounded mb-3 bg-light">
+                    <div class="label">Accuracy</div>
+                    <div class="value">{{ (results.accuracy * 100) | round(2) }}%</div>
+                </div>
+                {% endif %}
+                
+                {% if results.report is defined and results.report['weighted_avg'] is defined %}
+                <div class="row small text-center">
+                    <div class="col-4">
+                        <div class="fw-bold">Precision</div>
+                        <div>{{ (results.report['weighted_avg']['precision'] * 100) | round(1) }}%</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold">Recall</div>
+                        <div>{{ (results.report['weighted_avg']['recall'] * 100) | round(1) }}%</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold">F1-Score</div>
+                        <div>{{ (results.report['weighted_avg']['f1-score'] * 100) | round(1) }}%</div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elif problem_type == 'regression' %}
+                {% if results.rmse is defined %}
+                <div class="stats-card border rounded mb-3 bg-light">
+                    <div class="label">RMSE</div>
+                    <div class="value">{{ results.rmse | round(4) }}</div>
+                </div>
+                {% endif %}
+                {% if results.r2 is defined %}
+                <div class="stats-card border rounded bg-light">
+                    <div class="label">R² Score</div>
+                    <div class="value">{{ (results.r2 * 100) | round(2) }}%</div>
+                </div>
+                {% endif %}
+            {% elif problem_type == 'clustering' %}
+                {% if results.silhouette is defined %}
+                <div class="stats-card border rounded bg-light">
+                    <div class="label">Silhouette Score</div>
+                    <div class="value">{{ results.silhouette | round(4) }}</div>
+                </div>
+                <div class="form-text mt-2 small text-center text-muted">
+                    Score ranges from -1 to 1. Closer to 1 is better.
+                </div>
+                {% endif %}
+            {% endif %}
+            {% if results.cv_mean is defined %}
+            <div class="alert alert-secondary py-2 small mt-3">
+                <i class="fas fa-check-double me-1"></i> 5-Fold Cross-Val: <strong>{{ (results.cv_mean * 100) | round(2) }}%</strong>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if results.feature_importance %}
+        <div class="card mt-4 p-4">
+            <h6 class="mb-3">Feature Importance</h6>
+            <div class="small">
+                {% for col, imp in results.feature_importance.items() %}
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ col }}</span>
+                        <span>{{ (imp * 100) | round(1) }}%</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-primary" style="width: {{ imp * 100 }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Visual Evaluation -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">Visual Representation</div>
+            <div class="card-body">
+                {% if problem_type == 'classification' %}
+                <canvas id="confusionMatrix" height="150"></canvas>
+                <div class="mt-3 small text-center text-muted">
+                    <span class="me-3"><i class="fas fa-square" style="color: #4361ee"></i> Higher Values</span>
+                    <span><i class="fas fa-square" style="color: #f1f3f9"></i> Lower Values</span>
+                </div>
+                {% elif problem_type == 'regression' %}
+                <div class="alert alert-success">
+                    <h6 class="alert-heading"><i class="fas fa-check-circle"></i> Success!</h6>
+                    <p class="mb-0 small">The regression model has been trained and evaluated using Root Mean Squared Error and R-squared coefficient.</p>
+                </div>
+                <!-- Add actual scatter prediction vs real if we had it -->
+                {% elif problem_type == 'clustering' %}
+                <div class="alert alert-info">
+                    <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Cluster Assignments</h6>
+                    <p class="mb-0 small">Model has identified distinct groupings within the data. Silhouette score indicates moderate cluster separation.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if problem_type == 'classification' and results.report is defined %}
+<!-- Classification Detailed Report -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Detailed Classification Report</div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Support</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cls, metrics in results.report.items() %}
+                        {% if cls not in ['accuracy', 'macro avg', 'weighted avg'] %}
+                        <tr>
+                            <td><strong>{{ cls }}</strong></td>
+                            <td>{{ metrics.precision | round(3) }}</td>
+                            <td>{{ metrics.recall | round(3) }}</td>
+                            <td>{{ metrics['f1-score'] | round(3) }}</td>
+                            <td>{{ metrics.support }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if problem_type == 'classification' and results.cm is defined %}
+<script>
+    const ctx = document.getElementById('confusionMatrix').getContext('2d');
+    const cmData = {{ results.cm | tojson }};
+    
+    // Flatten and prepare for heatmap-like chart
+    // For simplicity with Chart.js, we'll use a Bar chart styled as a grid or just a text-based display
+    // But let's try a creative use of Chart.js
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cmData.map((_, i) => `Class ${i}`),
+            datasets: cmData[0].map((_, col) => ({
+                label: `Pred ${col}`,
+                data: cmData.map(row => row[col]),
+                backgroundColor: '#4361eecc',
+                borderColor: '#4361ee',
+                borderWidth: 1
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Confusion Matrix (Actual vs Predicted)' }
+            },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

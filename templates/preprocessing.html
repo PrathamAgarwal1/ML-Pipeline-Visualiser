@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="fas fa-broom me-2 text-primary"></i> Data Preprocessing</h3>
+    <a href="{{ url_for('analysis') }}" class="btn btn-primary btn-sm">Move to Analysis <i class="fas fa-arrow-right ms-2"></i></a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header">Dataset Preview (Top 10 Rows)</div>
+            <div class="card-body p-0 overflow-auto" style="max-height: 500px;">
+                {{ preview | safe }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">Missing Values</div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush small">
+                    {% for col, count in info.missing.items() %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ col }}</span>
+                        <span class="badge {% if count > 0 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Actions</div>
+            <div class="card-body">
+                <form action="{{ url_for('handle_missing') }}" method="POST" class="mb-3">
+                    <label class="form-label small">Handle Missing Data</label>
+                    <div class="input-group">
+                        <select name="strategy" class="form-select form-select-sm">
+                            <option value="mean">Impute Mean</option>
+                            <option value="median">Impute Median</option>
+                            <option value="mode">Impute Mode</option>
+                            <option value="drop">Drop Nulls</option>
+                        </select>
+                        <button class="btn btn-outline-primary btn-sm" type="submit">Apply</button>
+                    </div>
+                </form>
+
+                <form action="{{ url_for('encode') }}" method="POST" class="mb-3">
+                    <label class="form-label small">Categorical Encoding</label>
+                    <button class="btn btn-outline-primary btn-sm w-100" type="submit">Auto Label Encoding</button>
+                    <div class="form-text x-small">Encodes all text columns to numeric.</div>
+                </form>
+
+                <form action="{{ url_for('scale') }}" method="POST">
+                    <label class="form-label small">Feature Scaling</label>
+                    <div class="input-group">
+                        <select name="method" class="form-select form-select-sm">
+                            <option value="standard">StandardScaler</option>
+                            <option value="minmax">MinMaxScaler</option>
+                        </select>
+                        <button class="btn btn-outline-primary btn-sm" type="submit">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Dataset Info Summary</div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 border-end">
+                        <div class="stats-card">
+                            <div class="label">Rows</div>
+                            <div class="value">{{ info.shape[0] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 border-end">
+                        <div class="stats-card">
+                            <div class="label">Columns</div>
+                            <div class="value">{{ info.shape[1] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 border-end">
+                        <div class="stats-card">
+                            <div class="label">Total Missing</div>
+                            <div class="value text-danger">{% set sum_missing = 0 %}{% for c in info.missing.values() %}{% set sum_missing = sum_missing + c %}{% endfor %}{{ sum_missing }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="label">Categorical</div>
+                            <div class="value">{% set cat_count = 0 %}{% for t in info.dtypes.values() %}{% if t == 'object' %}{% set cat_count = cat_count + 1 %}{% endif %}{% endfor %}{{ cat_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

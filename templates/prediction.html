@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <h3><i class="fas fa-magic me-2 text-primary"></i> Predict New Data</h3>
+    <p class="text-muted">Enter feature values to get a prediction from your trained model.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h5 class="card-title mb-4">Input Features</h5>
+            <form action="{{ url_for('predict') }}" method="POST">
+                <div class="row">
+                    {% for feature in features %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">{{ feature }}</label>
+                        <input type="number" step="any" name="{{ feature }}" class="form-control" required placeholder="0.0">
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3 py-2 shadow"><i class="fas fa-bolt me-2"></i> Predict</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+            {% if prediction is defined %}
+                <div class="p-5 rounded-circle bg-light mb-4" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; border: 5px solid var(--primary-color);">
+                    <h2 class="m-0 fw-bold text-primary">{{ prediction }}</h2>
+                </div>
+                <h4 class="mb-2">Predicted Outcome</h4>
+                <p class="text-muted">Based on the features provided, the model predicts the above result.</p>
+                
+                <div class="alert alert-info py-2 px-4 mt-3 small">
+                    <i class="fas fa-info-circle me-1"></i> Model used: <strong>{{ session.get('model_name') }}</strong>
+                </div>
+            {% else %}
+                <i class="fas fa-crystal-ball fa-5x text-light mb-4"></i>
+                <h4 class="text-muted">Awaiting Input</h4>
+                <p class="text-muted">Fill out the feature values on the left and click predict to see results here.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
