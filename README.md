@@ -1,4 +1,4 @@
-# Minimalist ML Pipeline Visualiser
+# ML Pipeline Visualiser
 
 A sleek, lightweight, and highly explainable Machine Learning Pipeline built for academic demonstrations. This project drops heavy web-framework boilerplate in favor of a minimalist **Streamlit** dashboard natively powered by **Jupyter Notebooks**, making the entire ML lifecycle—from preprocessing to model evaluation—fully transparent and easy to explain.
 
