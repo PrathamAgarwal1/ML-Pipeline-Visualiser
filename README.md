@@ -1,92 +1,71 @@
-# ML Pipeline Visualizer
+# Minimalist ML Pipeline Visualiser
 
-A full-stack, interactive platform designed to simplify and visualize the end-to-end Machine Learning lifecycle. This project was built to demonstrate how data moves from raw CSV format through preprocessing, analysis, and training, finally resulting in a predictive model.
+A sleek, lightweight, and highly explainable Machine Learning Pipeline built for academic demonstrations. This project drops heavy web-framework boilerplate in favor of a minimalist **Streamlit** dashboard natively powered by **Jupyter Notebooks**, making the entire ML lifecycle—from preprocessing to model evaluation—fully transparent and easy to explain.
 
 ## 🎯 Project Overview
 
-Building an ML model is more than just running a script; it involves a series of steps like cleaning data, handling missing values, and picking the right evaluation metrics. This **ML Pipeline Visualizer** provides a user-friendly dashboard to perform these tasks without writing code, making it an excellent tool for understanding the "behind-the-scenes" of scikit-learn.
+Building an ML model involves complex steps like cleaning data, handling missing values, scaling, and picking the right algorithms. This **ML Pipeline Visualiser** provides an intuitive interface to perform these tasks interactively.
 
-Whether it's predicting Titanic survival (Classification), house prices (Regression), or segmenting customers (Clustering), this app handles it all in one flow.
+What sets this project apart is its **Explainability Architecture**: the backend logic doesn't live in obfuscated scripts. Instead, the Streamlit app imports logic directly out of documented Jupyter Notebooks (`.ipynb`). You can open the notebooks to read the theory, understand the exact code executing behind the scenes, and then see the visual results in the app!
 
 ## 🚀 Features
 
-*   **Dataset Upload**: Support for custom CSV uploads or choosing from built-in datasets.
-*   **Data Preprocessing**: Handle missing values (mean/median/mode/drop), label encoding for categorical data, and feature scaling (Standard/MinMax).
-*   **Data Analysis**: Generate statistical summaries and dynamic correlation heatmaps.
-*   **Model Training**: Train multiple models like Logistic Regression, KNN, Random Forest, and KMeans.
-*   **Evaluation**: View performance metrics like Accuracy, RMSE, Confusion Matrices, and Feature Importance charts.
-*   **Cross-Validation**: Automatic k-fold validation to ensure model reliability.
-*   **Prediction Module**: Interactive form to input new data and get real-time predictions from the trained model.
+*   **Native Notebook Flow**: Logic is natively sourced from `data_preprocessing.ipynb`, `analysis.ipynb`, and `model_training.ipynb`.
+*   **Dataset Upload**: Dynamically ingest custom `.csv` data pipelines.
+*   **Interactive Preprocessing**: Handle missing values (mean/median/mode/drop), auto-encode categorical strings, and scale numerical features (Standard/MinMax).
+*   **EDA & Visuals**: View dynamically generated correlation heatmaps and descriptive statistics.
+*   **Multi-Model Training**: Train and compare Classification (Logistic, KNN, SVM), Regression (Linear, Random Forest), or unsupervised Clustering (KMeans, Hierarchical).
+*   **Performance Metrics**: Real-time stats like Accuracy, RMSE, Silhouette Scores, and Confusion matrices.
 
 ## 🛠️ Tech Stack
 
-*   **Backend**: Python (Flask)
+*   **Frontend / UI**: Streamlit
 *   **Machine Learning**: Scikit-learn, Pandas, NumPy
-*   **Visualization**: Matplotlib, Seaborn, Chart.js
-*   **Frontend**: HTML5, CSS3 (Custom Glassmorphism design), Bootstrap 5
+*   **Visualization**: Matplotlib, Seaborn
+*   **Module Engine**: `ipynb` (Jupyter Notebook hook)
 
-## 📊 Datasets Included
-
-1.  **Titanic Dataset**: Used for binary classification (Predicting survival).
-2.  **House Prices Dataset**: Used for regression (Predicting property value).
-3.  **Mall Customer Dataset**: Used for unsupervised clustering (Segmenting users based on spending habits).
-
-Using multiple datasets helped in testing the robustness of the pipeline against different problem types and data distributions.
-
-## 📋 How to Run
+## 📋 How to Run Locally
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/ml-pipeline-visualizer.git
-    cd ml-pipeline-visualizer
+    git clone https://github.com/PrathamAgarwal1/ML-Pipeline-Visualiser.git
+    cd ML-Pipeline-Visualiser
     ```
 
 2.  **Install dependencies**:
     ```bash
-    pip install -r requirements.txt
+    pip install streamlit pandas numpy scikit-learn matplotlib seaborn ipynb
     ```
 
-3.  **Run the application**:
+3.  **Run the Application**:
     ```bash
-    python app.py
+    streamlit run app.py
     ```
 
-4.  **Open in Browser**:
-    Go to `http://127.0.0.1:5000`
+4.  **View the App**:
+    Your browser will automatically open the dashboard at `http://localhost:8501`.
 
 ## 📂 Project Structure
 
 ```text
-ML-Pipeline-Visualizer/
-├── app.py              # Flask backend & ML logic
-├── processed_data.csv  # Temporary storage for pipeline state
-├── datasets/           # Preloaded CSV files
-├── models/             # Saved .joblib model files
-├── static/
-│   └── css/style.css   # Custom dashboard styling
-└── templates/          # Modular HTML components
+ML-Pipeline-Visualiser/
+├── app.py                      # Minimalist Streamlit Dashboard
+├── data_preprocessing.ipynb    # Explainable Preprocessing module
+├── analysis.ipynb              # Explainable EDA module
+├── model_training.ipynb        # Explainable Training/Evaluation module
+├── system_documentation.md     # Platform architecture docs
+├── datasets/                   # Test CSV files
+└── models/                     # Saved .joblib model dumps
 ```
-
-## 📸 Screenshots
-*(Add screenshots of your dashboard, training results, and evaluation pages here to showcase the UI)*
 
 ## 🧠 Learning Outcomes
 
-Building this project helped me understand:
-*   How to bridge the gap between Python ML scripts and a web-based UI.
-*   The importance of robust preprocessing—handling NaNs and non-numeric data is where 80% of the work happens.
-*   Interpreting model results through visualizations like heatmaps and importance bars.
-*   Managing application state in Flask while working with large dataframes.
-
-## 🏗️ Future Improvements
-
-*   Adding more advanced models like XGBoost or LightGBM.
-*   Implementing hyperparameter tuning (GridSearch/RandomSearch) via the UI.
-*   Cloud deployment on platforms like Heroku or AWS.
-*   Support for real-time API-based data ingestion.
+Building this project focused on:
+*   Bridging the gap between raw Python ML execution and minimalist UI tools like Streamlit.
+*   Understanding the importance of robust preprocessing logic (NaN handling, string decoding).
+*   How to build transparent, "glass-box" architectures where the executing code doubles as the academic documentation (via Jupyter bindings).
 
 ---
 
-**Author:** Shubhang Shrivastav  
-**Course:** B.Tech CSE  
-**Subject:** Machine Learning Lab
+**Author:** Pratham Agarwal  
+**Subject:** Machine Learning / Data Science
