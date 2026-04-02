@@ -66,6 +66,3 @@ Building this project focused on:
 *   How to build transparent, "glass-box" architectures where the executing code doubles as the academic documentation (via Jupyter bindings).
 
 ---
-
-**Author:** Pratham Agarwal  
-**Subject:** Machine Learning / Data Science
