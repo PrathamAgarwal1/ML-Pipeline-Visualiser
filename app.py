@@ -83,17 +83,32 @@ if uploaded_file:
                 st.info(f"Training {model_name} model for {problem_type}...")
                 model, results = model_training.train_and_evaluate_model(X, y, problem_type, model_name)
                 
-                # Use the new explainability evaluation module
-                import model_evaluation
-                model_evaluation.display_model_evaluation(
-                    model, 
-                    model_name, 
-                    problem_type, 
-                    X, y, 
-                    results, 
-                    t_col, 
-                    scale_method
-                )
+                # Serialize the evaluation results for the standalone Jupyter Notebook
+                import pickle
+                with open('model_evaluation_results.pkl', 'wb') as f:
+                    pickle.dump({
+                        'model_name': model_name,
+                        'problem_type': problem_type,
+                        'X': X,
+                        'results': results,
+                        'target_col': t_col
+                    }, f)
+                
+                st.info("Evaluation results serialized to `model_evaluation_results.pkl`. Please open `model_evaluation.ipynb` to view the detailed evaluation report.")
+                
+                # Render quick evaluation metrics directly on the website
+                st.subheader("Quick Evaluation Metrics")
+                if problem_type == 'regression':
+                    col1, col2 = st.columns(2)
+                    col1.metric("RMSE", f"{results.get('rmse', 0):.4f}")
+                    col2.metric("R² Score", f"{results.get('r2', 0):.4f}")
+                elif problem_type == 'classification':
+                    st.metric("Accuracy", f"{results.get('accuracy', 0):.4f}")
+                    if 'report' in results:
+                        st.text("Classification Report:")
+                        st.dataframe(pd.DataFrame(results['report']).transpose())
+                elif problem_type == 'clustering':
+                    st.metric("Silhouette Score", f"{results.get('silhouette', 0):.4f}")
                     
                 st.success("Model trained and safely saved to models/last_model.joblib!")
                 
