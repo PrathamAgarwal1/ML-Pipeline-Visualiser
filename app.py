@@ -83,17 +83,17 @@ if uploaded_file:
                 st.info(f"Training {model_name} model for {problem_type}...")
                 model, results = model_training.train_and_evaluate_model(X, y, problem_type, model_name)
                 
-                # Show results dynamically based on problem type
-                if problem_type == 'classification':
-                    st.metric(label="Accuracy", value=f"{results['accuracy']:.4f}")
-                    st.metric(label="Cross-Val Mean", value=f"{results['cv_mean']:.4f}")
-                    st.write("**Classification Report:**", results['report'])
-                elif problem_type == 'regression':
-                    st.metric(label="RMSE", value=f"{results['rmse']:.4f}")
-                    st.metric(label="R2 Score", value=f"{results['r2']:.4f}")
-                    st.metric(label="Cross-Val R2 Mean", value=f"{results['cv_mean']:.4f}")
-                elif problem_type == 'clustering':
-                    st.metric(label="Silhouette Score", value=f"{results['silhouette']:.4f}")
+                # Use the new explainability evaluation module
+                import model_evaluation
+                model_evaluation.display_model_evaluation(
+                    model, 
+                    model_name, 
+                    problem_type, 
+                    X, y, 
+                    results, 
+                    t_col, 
+                    scale_method
+                )
                     
                 st.success("Model trained and safely saved to models/last_model.joblib!")
                 
